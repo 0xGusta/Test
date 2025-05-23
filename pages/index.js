@@ -22,13 +22,20 @@ function WalletBalance() {
   const fetchBalance = async () => {
     if (!wallets || wallets.length === 0) return;
     const wallet = wallets[0];
-    await wallet.switchChain(MONAD_CHAIN);
-    const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-    const rawBalance = await provider.getBalance(address);
-    const formatted = ethers.utils.formatEther(rawBalance);
-    setBalance(formatted);
+
+    try {
+      await wallet.switchChain(MONAD_CHAIN);
+
+      const provider = await wallet.getEthersProvider(); // Correção importante
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      const rawBalance = await provider.getBalance(address);
+      const formatted = ethers.utils.formatEther(rawBalance);
+      setBalance(formatted);
+    } catch (error) {
+      console.error("Erro ao buscar saldo:", error);
+      setBalance("Erro ao carregar");
+    }
   };
 
   useEffect(() => {
@@ -70,4 +77,4 @@ export default function Home() {
       <WalletBalance />
     </PrivyProvider>
   );
-}
+                                                                                }
