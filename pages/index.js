@@ -25,7 +25,8 @@ function WalletBalance() {
     await wallet.switchChain(MONAD_CHAIN);
     const provider = new ethers.providers.Web3Provider(wallet.ethereum);
     const signer = provider.getSigner();
-    const rawBalance = await provider.getBalance(await signer.getAddress());
+    const address = await signer.getAddress();
+    const rawBalance = await provider.getBalance(address);
     const formatted = ethers.utils.formatEther(rawBalance);
     setBalance(formatted);
   };
