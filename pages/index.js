@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { PrivyProvider, usePrivy, useWallets } from "@privy-io/react-auth";
 import { ethers } from "ethers";
 
+// Configuração correta da Monad Testnet
 const MONAD_CHAIN = {
-  chainId: "0x279f",
+  chainId: "0x279f", // 10239 decimal
   chainName: "Monad Testnet",
   rpcUrls: ["https://testnet-rpc.monad.xyz"],
   nativeCurrency: {
@@ -24,13 +25,19 @@ function WalletBalance() {
     const wallet = wallets[0];
 
     try {
+      console.log("Trocando para rede Monad...");
       await wallet.switchChain(MONAD_CHAIN);
 
-      const provider = await wallet.getEthersProvider(); // Correção importante
+      const provider = await wallet.getEthersProvider();
       const signer = provider.getSigner();
       const address = await signer.getAddress();
+
+      console.log("Endereço:", address);
+      console.log("Usando RPC:", MONAD_CHAIN.rpcUrls[0]);
+
       const rawBalance = await provider.getBalance(address);
       const formatted = ethers.utils.formatEther(rawBalance);
+      console.log("Saldo bruto:", rawBalance.toString());
       setBalance(formatted);
     } catch (error) {
       console.error("Erro ao buscar saldo:", error);
@@ -77,4 +84,4 @@ export default function Home() {
       <WalletBalance />
     </PrivyProvider>
   );
-                                                                                }
+}
